@@ -24,7 +24,7 @@ CLIENTID=PEXProd</Setting>
 TOPIC=test
 TargetConfigNames=BP</Setting>
   </Item>
-  <Item Name="BP" Category="" ClassName="Ens.BusinessProcessBPL" PoolSize="1" Enabled="false" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  <Item Name="BP" Category="" ClassName="dc.BusinessProcessBPL" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
   </Item>
 </Production>
 }

@@ -1,0 +1,8 @@
+[config]
+globals=0,0,64,0,0,0
+
+[SQL]
+TimePrecision=6
+
+[SqlSysDatatypes]
+TIMESTAMP=%Library.PosixTime

@@ -1,0 +1,24 @@
+{
+	"settings": {
+        "objectscript.conn": {
+            "active": true,
+            "links": {
+                "Production": "http://localhost:${port}/csp/${ns}/EnsPortal.ProductionConfig.zen?$NAMESPACE=${ns}&PRODUCTION=dc.Production",
+                "Business Process": "http://localhost:${port}/csp/${ns}/EnsPortal.BPLEditor.zen?BP=dc.BusinessProcessBPL.bpl"
+            },
+            "username": "SuperUser",
+            "password": "SYS",
+            "ns": "user",
+            "https": false,
+            "docker-compose": {
+                "service": "iris"
+            }
+        }
+        
+    },
+    "folders": [
+        {
+            "path": "."
+        }
+    ]
+}

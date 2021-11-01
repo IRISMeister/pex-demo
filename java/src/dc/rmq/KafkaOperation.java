@@ -25,6 +25,8 @@ public class KafkaOperation extends BusinessOperation {
     // Name of our Producer
     public String CLIENTID;
 
+    private long key=0;
+
     public void OnInit() throws Exception {
 
         iris = GatewayContext.getIRIS();
@@ -50,7 +52,8 @@ public class KafkaOperation extends BusinessOperation {
         // Create record
         String value = req.getString("Text");
         String topic = req.getString("Topic");
-        final ProducerRecord<Long, String> record = new ProducerRecord<>(topic, value);
+        key++;
+        final ProducerRecord<Long, String> record = new ProducerRecord<>(topic, Long.valueOf(key), value);
 
         // Send new record
         RecordMetadata metadata = producer.send(record).get();

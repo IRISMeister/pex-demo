@@ -11,6 +11,8 @@ services:
     ports: 
       - 55555:55555
 #      - 5005:5005
+    environment:
+      - TZ=JST-9
 
   netgw:
     image: intersystemsdc/pexservice:latest
@@ -20,6 +22,8 @@ services:
     restart: always
     ports: 
       - 55556:55556
+    environment:
+      - TZ=JST-9
 
   iris:
     init: true
@@ -33,6 +37,11 @@ services:
     ports:
       - 52773:52773
       - 51773:51773
+    volumes:
+      - ./UserCPF:/home/irisowner/cpf
+    environment:
+      - ISC_CPF_MERGE_FILE=/home/irisowner/cpf/merge.cpf
+      - TZ=JST-9
 
   zookeeper:
     image: 'confluentinc/cp-zookeeper:5.3.1-1'
@@ -42,6 +51,7 @@ services:
     environment:
       - 'ZOOKEEPER_CLIENT_PORT=2181'
       - 'ZOOKEEPER_TICK_TIME=2000'
+      - TZ=JST-9
     restart: 'on-failure'
 
   kafka:
@@ -72,22 +82,27 @@ services:
     environment:
       - 'KAFKA_BROKER_ID=1'
       - 'KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181'
-      - 'KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://172.17.111.209:9092'
+      - 'KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://irishost:9092'
       - 'KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
       - 'KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT'
       - 'KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1'
       - 'KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1'
       - 'KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1'
 #      - 'KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.net.preferIPv4Stack=true -Dcom.sun.management.jmxremote.port=9999 -Dcom.sun.management.jmxremote.rmi.port=9999 -Djava.rmi.server.hostname=ip here'
+      - TZ=JST-9
     restart: 'on-failure'
 
   kafka-manager:
-    image: 'eduard93/kafka-manager-demo:latest'
+    #image: 'eduard93/kafka-manager-demo:latest'
+    build:
+      context: kafka-manager-demo
+      dockerfile: Dockerfile
     hostname: 'kafka-manager'
     depends_on:
       - 'kafka'
     environment:
       - 'KAFKA_SERVERS_URL=kafka:29092'
+      - TZ=JST-9
     ports:
       - 8082:8082
     restart: 'on-failure'

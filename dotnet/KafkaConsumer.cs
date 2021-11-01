@@ -36,7 +36,9 @@ namespace dc
         /// <summary>
         /// Connection to Kafka
         /// </summary>
-        private IConsumer<Ignore, string> consumer;
+        private IConsumer<long, string> consumer;
+
+        private int count=0;
 
         /// <summary>
         /// Initialize connections 
@@ -58,7 +60,7 @@ namespace dc
                 AutoOffsetReset = AutoOffsetReset.Earliest
             };
 
-            consumer = new ConsumerBuilder<Ignore, string>(conf).Build();
+            consumer = new ConsumerBuilder<long, string>(conf).Build();
 
             consumer.Subscribe(TOPIC);
 
@@ -76,16 +78,39 @@ namespace dc
             bool atEnd = false;
             while (atEnd is false)
             {
-                ConsumeResult<Ignore, string> message = consumer.Consume(1000);
+                ConsumeResult<long, string> message = consumer.Consume(1000);
                 if (message is null)
                 {
                     atEnd = true;
                 } else {
                     string text = message.Message.Value;
+                    long key = message.Message.Key;
+                    long uxts = message.Message.Timestamp.UnixTimestampMs;
+                    string topic = message.Topic;
+                    long offset = message.Offset.Value;
+
                     foreach (string target in targets)
                     {
-                        IRISObject request = (IRISObject)iris.ClassMethodObject("Ens.StringContainer", "%New", text);
-                        SendRequestAsync(target, request);
+                        if(count % 2 == 0) {
+                            KafkaConsumerRequest request = new KafkaConsumerRequest();
+                            request.text=text;
+                            request.topic=topic;
+                            request.key=key.ToString();
+                            request.offset=offset.ToString();
+                            request.uxTimesStamp=uxts;
+                            SendRequestAsync(target, request);
+                        }
+                        else {
+                            //IRISObject request = (IRISObject)iris.ClassMethodObject("Ens.StringContainer", "%New", topic+"("+offset+"):"+uxts+":"+key.ToString()+":"+text);
+                            IRISObject request = (IRISObject)iris.ClassMethodObject("dc.ConsumerRequest", "%New");
+                            request.Set("Topic",topic); //, topic+"("+offset+"):"+uxts+":"+key.ToString()+":"+text);
+                            request.Set("Text",text);
+                            request.Set("Key",key.ToString());
+                            request.Set("Offset",offset.ToString());
+                            request.Set("uxTimesStamp",uxts);
+                            SendRequestAsync(target, request);
+                        }
+                        count++;
                     }
                 }
             }
