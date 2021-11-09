@@ -83,3 +83,58 @@ PEXについてのマニュアルは[こちら](https://docs.intersystems.com/ir
 4. 受信メッセージの形式  
 [メッセージ](https://docs.intersystems.com/iris20211/csp/docbookj/DocBook.UI.Page.cls?KEY=EPEX_hosts_adapters#EPEX_hosts_adapters_messaging)は、External Language側で定義する方法と、IRIS側で定義する方法があります。本デモでは[実装コード内](dotnet/KafkaConsumer.cs)でメッセージを受信するたびに、交互に切り替えています。  
 
+# WindowsでPEX/.NET Framework 4.5を使用する例
+Windows環境でPEX/.NETをビルド、起動する方法です。
+## ビルド手順
+使用IDE: Microsoft Visual Studio 2017  
+1. 開く->プロジェクトで[PEX.csproj](dotnetfw45/PEX/PEX.csproj)を選択する。
+2. 下記の参照設定が正しいことを確認します。 
+- InterSystems.Data.IRISClient
+- InterSystems.Data.Utils
+
+これらが正しく参照出来ていない場合は、プロジェクトのプロパティで参照パスを追加する等して対処します。
+> 参照すべき場所はIRISのインストール先がc:\InterSystems\IRISの場合は、C:\InterSystems\IRIS\dev\dotnet\bin\v4.5\
+
+3. 新規作成されたソリューション(.sln)を保存。
+
+4. Package Manager ConsoleでKafka .NET clientをインストール
+```
+PM> Install-Package Confluent.Kafka
+```
+
+5. ビルド実行
+
+bin/Release/PEX.dllが生成されます。
+
+## 実行
+
+1. docker環境を起動
+```bash
+$ docker-compose up -d
+$ docker-compose stop netgw
+```
+> 混乱を避けるために、コンテナ版のDotNet Gatewayだけを停止します。
+
+2. DotNet Gatewayを単独で起動
+```DOS
+>C:\InterSystems\IRIS\dev\dotnet\bin\v4.5\InterSystems.Data.Gateway64 55556 "" "" 0.0.0.0
+```
+> 55556はListenするポート番号。値は任意。  
+> Firewallの設定でIRIS ADO DotNet Gatewayによる外部通信を許可すること。  
+> IRISもWinodws版を使用している場合は、代わりにExternal Language Serversを使用することもできます。  
+
+3. プロダクション設定を変更
+
+KafkaConsumerの  
+[Remote BusinessService]->[ゲートウェイホスト]をWindowsホストのIPアドレスに変更。
+> IRISをコンテナ実行している場合は、コンテナ内からアクセス可能なIPアドレスを指定すること
+
+[Remote BusinessService]->[ゲートウェイの追加 CLASSPATH]をビルドされたDLL(絶対パスでbin/Release/PEX.dllを指定)に変更。  
+[Remote BusinessService]->[リモート設定]のSERVERS=kafka:29092をSERVERS=irishost:9092に変更。  
+> irishostはIRISコンテナが稼働しているホスト名
+
+![4](https://raw.githubusercontent.com/IRISMeister/doc-images/main/pex-demo/win-bs-setting.png)  
+
+
+以後、「Kafkaへの送信」の手順を実行します。
+

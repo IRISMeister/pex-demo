@@ -3,3 +3,6 @@ obj
 bin
 *.bak
 *.sln
+dotnetfw45/PEX/PEX.csproj.user
+dotnetfw45/PEX/packages
+dotnetfw45/PEX/packages.config
