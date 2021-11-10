@@ -7,8 +7,8 @@
     <ProjectGuid>{89C3BAF3-9686-43B2-B867-C7BF4C349719}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PEX</RootNamespace>
-    <AssemblyName>PEX</AssemblyName>
+    <RootNamespace>KafkaConsumer</RootNamespace>
+    <AssemblyName>KafkaConsumer</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

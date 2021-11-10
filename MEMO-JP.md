@@ -87,7 +87,7 @@ PEXについてのマニュアルは[こちら](https://docs.intersystems.com/ir
 Windows環境でPEX/.NETをビルド、起動する方法です。
 ## ビルド手順
 使用IDE: Microsoft Visual Studio 2017  
-1. 開く->プロジェクトで[PEX.csproj](dotnetfw45/PEX/PEX.csproj)を選択する。
+1. 開く->プロジェクトで[KafkaConsumer.nfw45.csproj](dotnet/KafkaConsumer.nfw45.csproj)を選択する。
 2. 下記の参照設定が正しいことを確認します。 
 - InterSystems.Data.IRISClient
 - InterSystems.Data.Utils
@@ -104,7 +104,7 @@ PM> Install-Package Confluent.Kafka
 
 5. ビルド実行
 
-bin/Release/PEX.dllが生成されます。
+bin/Release/KafkaConsumer.dllが生成されます。
 
 ## 実行
 
@@ -119,7 +119,7 @@ $ docker-compose stop netgw
 ```DOS
 >C:\InterSystems\IRIS\dev\dotnet\bin\v4.5\InterSystems.Data.Gateway64 55556 "" "" 0.0.0.0
 ```
-> 55556はListenするポート番号。値は任意。  
+> 55556はListenするポート番号。 
 > Firewallの設定でIRIS ADO DotNet Gatewayによる外部通信を許可すること。  
 > IRISもWinodws版を使用している場合は、代わりにExternal Language Serversを使用することもできます。  
 
@@ -129,9 +129,9 @@ KafkaConsumerの
 [Remote BusinessService]->[ゲートウェイホスト]をWindowsホストのIPアドレスに変更。
 > IRISをコンテナ実行している場合は、コンテナ内からアクセス可能なIPアドレスを指定すること
 
-[Remote BusinessService]->[ゲートウェイの追加 CLASSPATH]をビルドされたDLL(絶対パスでbin/Release/PEX.dllを指定)に変更。  
+[Remote BusinessService]->[ゲートウェイの追加 CLASSPATH]をビルドされたDLL(絶対パスでbin/Release/KafkaConsumer.dllを指定)に変更。  
 [Remote BusinessService]->[リモート設定]のSERVERS=kafka:29092をSERVERS=irishost:9092に変更。  
-> irishostはIRISコンテナが稼働しているホスト名
+> irishostはIRISコンテナが稼働しているホスト名。IPアドレスでも良い。DotNet Gateway稼働ホストから同ホスト名で到達できる事。
 
 ![4](https://raw.githubusercontent.com/IRISMeister/doc-images/main/pex-demo/win-bs-setting.png)  
 

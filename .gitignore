@@ -3,6 +3,6 @@ obj
 bin
 *.bak
 *.sln
-dotnetfw45/PEX/PEX.csproj.user
-dotnetfw45/PEX/packages
-dotnetfw45/PEX/packages.config
+dotnet/packages
+dotnet/packages.config
+dotnet/KafkaConsumer.nfw45.csproj.user
